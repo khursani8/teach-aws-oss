@@ -33,3 +33,11 @@ the accurate model + a grounding guardrail that flags invented entities
 with real examples (see notebook).
 
 Full walkthrough: `docs/` (GitHub Pages). Colab: `notebook/`.
+
+## Reproducing the eval
+
+`tools/` ships the evaluation stack (inference-side only, no training code):
+- `eval_flex.py` — similarity-banded flexibility metrics for any generations.jsonl
+- `judge_ab.py` — 4B vs 30B judge agreement check
+- `service_delta.py` — per-service FALSE-rate comparison between runs
+- `eval_judge.py` — the strict judge itself (Qwen3-4B, guided TRUE/FALSE)
