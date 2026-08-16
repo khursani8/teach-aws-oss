@@ -103,6 +103,7 @@ details.ref p{color:var(--dim);border-left:2px solid var(--line);padding-left:14
       <b>teach-aws</b><span>experiment walkthrough</span>
     </a>
     <nav class="chapters">
+      <a href="{{ '/gallery.html' | relative_url }}" {% if page.title contains 'service' %}class="on"{% endif %}>Examples</a>
       <a href="{{ '/setup.html' | relative_url }}" {% if page.title contains 'Setup' %}class="on"{% endif %}>1 Setup</a>
       <a href="{{ '/sweep.html' | relative_url }}" {% if page.title contains 'sweep' %}class="on"{% endif %}>2 Sweep</a>
       <a href="{{ '/data.html' | relative_url }}" {% if page.title contains 'Data' %}class="on"{% endif %}>3 Data</a>
