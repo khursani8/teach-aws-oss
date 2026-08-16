@@ -34,6 +34,11 @@ with real examples (see notebook).
 
 Full walkthrough: `docs/` (GitHub Pages). Colab: `notebook/`.
 
+## Learn LoRA finetuning
+
+New to LoRA finetuning? This video walks through the fundamentals that this
+project builds on: [How to finetune LLMs with LoRA](https://www.youtube.com/watch?v=zQi0kqQNDrU)
+
 ## Reproducing the eval
 
 `tools/` ships the evaluation stack (inference-side only, no training code):

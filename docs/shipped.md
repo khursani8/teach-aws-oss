@@ -61,6 +61,11 @@ asking questions, the real failure example, and the guardrail in action.
 3. Teacher-rewrite chain: tiny accurate retriever + 35B rewriter, if flexible phrasing
    becomes a requirement
 
+## Learning resources
+
+If LoRA finetuning is new to you, this video covers the method this project uses:
+[How to finetune LLMs with LoRA](https://www.youtube.com/watch?v=zQi0kqQNDrU).
+
 ## Reproduction & record
 
 Everything on this site is backed by artifacts in `results/`: every sweep trial's config
