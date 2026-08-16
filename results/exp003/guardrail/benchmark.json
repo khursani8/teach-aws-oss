@@ -1,0 +1,7 @@
+{
+  "method": "entity-grounding check: flag answers with named entities absent from reference",
+  "benchmark": "H3 (best model) subset n=343",
+  "catch_rate_on_FALSE": "22/37 (59%)",
+  "overblock_on_TRUE": "1/306 (0.3%)",
+  "note": "guardrail.py is inference-only (no training needed); ships with notebook"
+}
