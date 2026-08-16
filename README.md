@@ -1,4 +1,4 @@
-# teach-aws-oss — Experiment Results
+# teach-aws-oss: Experiment Results
 
 Open experiment record: unsloth LoRA finetuning of Qwen3.5-2B for Malay AWS QA,
 evaluated with a strict completely-correct LLM judge on unseen questions.
@@ -17,16 +17,16 @@ summaries, sweep trial configs/results, grounding guardrail, Colab notebook.
 | **H3 (2ep, completion-only, K3)** | **87.3%** (2,324/2,661) | verbatim reference recall |
 
 ## Repo layout
-- `results/exp001/` — 24-trial hyperparameter sweep, layer leave-one-out ablation, K-grid (data diversity)
-- `results/exp002/` — epochs × completion-only × K5 grid
-- `results/exp003/` — flexibility frontier (balanced mixtures), NEFTune attempts, full-set finals, grounding guardrail benchmark
-- `notebook/` — Colab: how to use the final model + guardrail
-- `docs/` — GitHub Pages walkthrough (in progress)
+- `results/exp001/`: 24-trial hyperparameter sweep, layer leave-one-out ablation, K-grid (data diversity)
+- `results/exp002/`: epochs × completion-only × K5 grid
+- `results/exp003/`: flexibility frontier (balanced mixtures), NEFTune attempts, full-set finals, grounding guardrail benchmark
+- `notebook/`: Colab: how to use the final model + guardrail
+- `docs/`: GitHub Pages walkthrough (in progress)
 
 ## The story (short version)
 1ep + completion-only learns facts with flexible phrasing but scores 38.8% under
 a strict judge; 2ep collapses to verbatim recall at 87%. Balancing answer-variant
-frequency trades accuracy for diversity along a steep frontier — the judge itself
+frequency trades accuracy for diversity along a steep frontier. The judge itself
 punishes rephrasing (a rephrased answer must keep EVERY fact to pass). We ship
 the accurate model + a grounding guardrail that flags invented entities
 (59% hallucination catch at 0.3% overblocking) and document honest limitations
@@ -42,7 +42,7 @@ project builds on: [How to finetune LLMs with LoRA](https://www.youtube.com/watc
 ## Reproducing the eval
 
 `tools/` ships the evaluation stack (inference-side only, no training code):
-- `eval_flex.py` — similarity-banded flexibility metrics for any generations.jsonl
-- `judge_ab.py` — 4B vs 30B judge agreement check
-- `service_delta.py` — per-service FALSE-rate comparison between runs
-- `eval_judge.py` — the strict judge itself (Qwen3-4B, guided TRUE/FALSE)
+- `eval_flex.py`: similarity-banded flexibility metrics for any generations.jsonl
+- `judge_ab.py`: 4B vs 30B judge agreement check
+- `service_delta.py`: per-service FALSE-rate comparison between runs
+- `eval_judge.py`: the strict judge itself (Qwen3-4B, guided TRUE/FALSE)
