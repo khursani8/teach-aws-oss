@@ -47,6 +47,13 @@ prevents user complaints. The remaining 41% of failures (wrong numbers, omission
 same-entity different-claims) need retrieval-side coverage, not generation-side patching:
 the vpc/amplify/appsync FALSE-rates track training coverage directly.
 
+## Is the judge itself reliable?
+
+Every number on this site comes from a 4B judge. We re-judged H3's
+identical generations with a 30B-A3B judge: **89.2% vs 91.3%, 97.4% agreement**
+(9/343 verdicts flipped, net +2.1pp — within the subset noise floor). The strict-judge
+foundation holds; the small judge is not the source of our results. (`results/exp003/H3/judge_ab.json`)
+
 ## What we did about the data side
 
 Error analysis at every stage (bucketed FALSE reasons → truncation fix → register fix →
