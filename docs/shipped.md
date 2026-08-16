@@ -16,7 +16,7 @@ prev: failures
 | LoRA | full MLP (gate/up/gate_up/down), ALL layers, r=16, α=2r=32, dropout 0 |
 | LR | 4e-4 linear, 5 warmup steps, batch 2×4, adamw_8bit |
 | Schedule | **2 epochs**, **completion-only loss** |
-| Data | teach_aws + K3 synthetic answer paraphrases (26,888 rows) |
+| Data | teach_aws + K3 synthetic + hard-service variants (28,148 rows) |
 
 Weights: Hugging Face (see notebook for the repo id). Training code: private.
 

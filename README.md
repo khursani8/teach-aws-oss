@@ -14,7 +14,8 @@ summaries, sweep trial configs/results, grounding guardrail, Colab notebook.
 | Base Qwen3.5-2B | 4.1% | — |
 | D (1ep, completion-only, K5) | 35.7% | flexible rephrasing |
 | C (2ep, full-seq, K3) | 86.8% | verbatim reference recall |
-| **H3 (2ep, completion-only, K3)** | **87.3%** (2,324/2,661) | verbatim reference recall |
+| **H4 (H3 + hard-service data)** | **91.2%** (2,428/2,661) | verbatim reference recall |
+| H3 (2ep, completion-only, K3) | 87.3% (2,324/2,661) | verbatim reference recall |
 
 ## Repo layout
 - `results/exp001/`: 24-trial hyperparameter sweep, layer leave-one-out ablation, K-grid (data diversity)

@@ -1,0 +1,6 @@
+{
+  "method": "entity-grounding check on H4a_full",
+  "n": 2661,
+  "catch_on_FALSE": "134/233 (58%)",
+  "overblock_on_TRUE": "18/2428 (0.7%)"
+}
