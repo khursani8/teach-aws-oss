@@ -42,9 +42,9 @@ for page in PAGES:
         page_html = page_html.replace(
             "{% if page.title contains '" + frag + "' %}class=\"on\"{% endif %}", on)
     # relative_url filters -> plain paths
-    page_html = page_html.replace("{{ '/' | relative_url }}", "index.html" if page != "index" else "index.html")
+    page_html = page_html.replace("{{ " + "'/'" + " | relative_url }}", "index.html")
     for name in PAGES:
-        page_html = page_html.replace(f"{{ '/{name}.html' | relative_url }}", f"{name}.html")
+        page_html = page_html.replace("{{ " + "'/" + name + ".html'" + " | relative_url }}", name + ".html")
     # any leftover jekyll tags
     leftover = re.findall(r"\{\{[^}]*\}\}|\{%[^%]*%\}", page_html)
     if leftover:
