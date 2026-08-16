@@ -3,11 +3,11 @@ layout: default
 title: 3. Data vs hyperparams
 ---
 
-# Chapter 3 — It's the data (until it's the schedule)
+# Chapter 3: It's the data (until it's the schedule)
 
 ## Synthetic answer paraphrases
 
-The original dataset has ~6 paraphrased *questions* per answer but one canonical *answer* —
+The original dataset has ~6 paraphrased *questions* per answer but one canonical *answer*, so
 the model learns "this fact has exactly one phrasing". To break that, we generated
 K paraphrased answers per cluster with a teacher (Qwen3.5-35B-A3B, thinking disabled,
 register constraints: plain Malay prose, ±30% length, keep every fact).
@@ -23,7 +23,7 @@ register constraints: plain Malay prose, ±30% length, keep every fact).
 | K5 | 4.5% | **6.6%** |
 
 Answer diversity helped monotonically; fewer question surfaces *helped once K≥3*.
-At a weak config, data composition moved 1.5%→6.6% — dwarfing any single hyperparameter.
+At a weak config, data composition moved 1.5%→6.6%, dwarfing any single hyperparameter.
 
 ## Then the schedule kicked the door in
 
@@ -43,7 +43,7 @@ Two findings:
 2. **The second epoch is worth +50pp.** Train loss still descending at 1ep (1.15 → 0.93)
    was the tell: the recall simply wasn't finished.
 
-But look at the next chapter before celebrating — that second epoch buys accuracy by
+Look at the next chapter before celebrating: that second epoch buys accuracy by
 *collapsing the output distribution*.
 
 *Artifacts: `results/kaxis/`, `results/exp002/`*

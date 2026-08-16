@@ -3,14 +3,14 @@ layout: default
 title: 4. The flexibility frontier
 ---
 
-# Chapter 4 — Verbatim collapse and the flexibility frontier
+# Chapter 4: Verbatim collapse and the flexibility frontier
 
-## What 2 epochs actually learns
+## What the second epoch learns
 
 C/H3's outputs are correct (86–89%) and **83% of them reproduce the reference at >99%
 similarity**. Median similarity: 1.000. The model maps any question paraphrase to the
-canonical answer text — genuinely *generalized* across phrasings (recall: 0/2,661 eval
-questions appear in training), but with zero rephrasing on the answer side.
+canonical answer text. The mapping did generalize across phrasings (recall:
+0/2,661 eval questions appear in training), but the answer side never rephrases.
 
 Why: the canonical answer appears ~7× per cluster (once per question paraphrase), each
 synthetic variant 1×. Majority surface wins; the second epoch hardens it.
@@ -35,13 +35,13 @@ a strict judge, because a rephrased answer must retain *every* fact to score TRU
 ## What didn't work
 
 - **Inference-time softening** (system prompt "answer in your own words"): changed the
-  wording, walked back to canonical anyway — cost 4pp, bought no flexibility. The
+  wording, walked back to canonical anyway. It cost 4pp and bought no flexibility. The
   verbatim lock survives prompting.
 - **Balancing variant frequency** (each answer surface seen equally): succeeded wildly at
   diversity (median sim 0.15) and collapsed accuracy to 17%. The judge fails nearly every
   free rephrase.
 - **NEFTune from epoch 2** (noise on embeddings in the second epoch only): our first wave
-  ran with the noise silently inactive — caught by missing activation markers, re-run with
+  ran with the noise silently inactive. We caught it by missing activation markers and re-ran with
   verified markers. With activation confirmed, the dose-response is a **cliff**, not a dial:
 
   | α | acc | median sim | %verbatim |
@@ -51,7 +51,7 @@ a strict judge, because a rephrased answer must retain *every* fact to score TRU
   | 10 | 78.7% | 1.000 | 74% |
   | 20 | 27.7% | 0.333 | 14% |
 
-  The mechanism works — α=20 achieves D-level flexibility from a 2-epoch base — but no dose
+  The mechanism works: α=20 achieves D-level flexibility from a 2-epoch base. But no dose
   lands mid-frontier, and α=20's accuracy falls *below* the 1-epoch flexible point (27.7 vs 38.8%).
   Embedding noise cannot buy the middle; the frontier there belongs to data/schedule choices
   (Chapter 3-4), or to rephrasing after retrieval.

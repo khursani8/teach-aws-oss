@@ -7,7 +7,7 @@ title: The experiment
 
 **TL;DR:** We finetuned Qwen3.5-2B with unsloth LoRA on 18k paraphrase-linked Malay AWS QA pairs,
 evaluated with a strict completely-correct LLM judge on 2,661 unseen questions, and took it from
-**4.1% → 87.3%** — while mapping exactly where flexibility dies, where accuracy comes from,
+**4.1% → 87.3%**, while mapping exactly where flexibility dies, where accuracy comes from,
 and which failures remain dangerous.
 
 | Chapter | |

@@ -3,11 +3,11 @@ layout: default
 title: 6. What we shipped
 ---
 
-# Chapter 6 — The shipped recipe and its honest limits
+# Chapter 6: The shipped recipe and its honest limits
 
 ## Final model
 
-**H3** — 87.3% strict accuracy on the full 2,661-question unseen eval (base: 4.1%).
+**H3:** 87.3% strict accuracy on the full 2,661-question unseen eval (base: 4.1%).
 
 | Ingredient | Value |
 |---|---|
@@ -28,7 +28,7 @@ Weights: Hugging Face (see notebook for the repo id). Training code: private.
 | mesolitica Malaysian-Qwen2.5-7B-Instruct (their base) | 8.3% (n=60) |
 | base Qwen3.5-2B (our base) | 4.1% (n=2,661) |
 
-The 7B community adapter nearly doubles its base on facts and reads beautifully in Malay —
+The 7B community adapter nearly doubles its base on facts and reads beautifully in Malay,
 but it's a register/style LoRA (~2.5k pairs, card recommends RAG for factual accuracy), so a
 fact-complete judge keeps only 15%. Style and facts are different axes; the notebook lets you
 run all three yourself.
@@ -55,7 +55,7 @@ asking questions, the real failure example, and the guardrail in action.
 
 ## What we'd try next
 
-1. Judge redesign: fact-coverage rubric (element extraction + per-fact check) — makes
+1. Judge redesign: fact-coverage rubric (element extraction + per-fact check). It makes
    flexible answers scorable, unlocking the training-side diversity work
 2. Hard-service synthetic mining (vpc/amplify/appsync FALSE-rates → targeted data)
 3. Teacher-rewrite chain: tiny accurate retriever + 35B rewriter, if flexible phrasing
