@@ -18,6 +18,7 @@ and which failures remain dangerous.
 | [4. The flexibility frontier](frontier.html) | verbatim collapse, balancing acts, NEFTune |
 | [5. Failures & the guardrail](failures.html) | hallucination quantified, grounding check |
 | [6. What we shipped](shipped.html) | final recipe, notebook, honest limits |
+| [Model responses by service](gallery.html) | same question, four models, real generations |
 
 ## Headline numbers
 

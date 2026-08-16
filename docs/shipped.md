@@ -34,6 +34,10 @@ but it's a register/style LoRA (~2.5k pairs, card recommends RAG for factual acc
 fact-complete judge keeps only 15%. Style and facts are different axes; the notebook lets you
 run all three yourself.
 
+## See it answer
+
+[Model responses by service](gallery.html): one real question per service, answered by all four models side by side.
+
 ## Use it
 
 The [Colab notebook](../notebook/teach_aws_inference.ipynb) shows loading with vLLM,
