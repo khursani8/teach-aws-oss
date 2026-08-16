@@ -1,0 +1,58 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1786839893362,
+  "projectRoot": "/mnt/data/work/teach-aws-oss",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "docs"
+    ],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "docs": {
+      "path": "docs",
+      "purpose": "Documentation",
+      "fileCount": 0,
+      "lastAccessed": 1786839893359,
+      "keyFiles": []
+    },
+    "notebook": {
+      "path": "notebook",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1786839893360,
+      "keyFiles": []
+    },
+    "results": {
+      "path": "results",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1786839893361,
+      "keyFiles": []
+    }
+  },
+  "hotPaths": [],
+  "userDirectives": []
+}
