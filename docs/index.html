@@ -99,7 +99,7 @@ hr{border:none;border-top:1px solid var(--line);margin:40px 0}
 <h1>Teaching a 2B model to answer AWS questions in Malay</h1>
 <p><strong>TL;DR:</strong> We finetuned Qwen3.5-2B with unsloth LoRA on 18k paraphrase-linked Malay AWS QA pairs,
 evaluated with a strict completely-correct LLM judge on 2,661 unseen questions, and took it from
-<strong>4.1% → 87.3%</strong>, while mapping exactly where flexibility dies, where accuracy comes from,
+<strong>4.1% → 91.2%</strong>, while mapping exactly where flexibility dies, where accuracy comes from,
 and which failures remain dangerous.</p>
 <table>
 <thead>
@@ -165,8 +165,13 @@ and which failures remain dangerous.</p>
 <td>1.00 (verbatim)</td>
 </tr>
 <tr>
-<td><strong>H3: 2 epochs, completion-only</strong></td>
-<td><strong>87.3%</strong></td>
+<td><strong>H4: H3 + hard-service data</strong></td>
+<td><strong>91.2%</strong></td>
+<td>1.00 (verbatim)</td>
+</tr>
+<tr>
+<td>H3: 2 epochs, completion-only</td>
+<td>87.3%</td>
 <td>1.00 (verbatim)</td>
 </tr>
 </tbody>

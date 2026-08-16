@@ -98,7 +98,7 @@ hr{border:none;border-top:1px solid var(--line);margin:40px 0}
 <main class="wrap">
 <h1>Chapter 6: The shipped recipe and its honest limits</h1>
 <h2>Final model</h2>
-<p><strong>H3:</strong> 87.3% strict accuracy on the full 2,661-question unseen eval (base: 4.1%).</p>
+<p><strong>H4</strong> (H3 recipe + 1,260 hard-service synthetic variants): <strong>91.2%</strong> strict accuracy on the full 2,661-question unseen eval (base: 4.1%). The augmentation targeted the hallucination services directly: vpc FALSE 16%→9%, amplify 11%→0%, appsync 19%→10% on the full set, with zero services worsening by 10pp or more.</p>
 <table>
 <thead>
 <tr>
