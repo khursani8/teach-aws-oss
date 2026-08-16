@@ -1,6 +1,8 @@
 ---
 layout: default
 title: 2. The sweep
+prev: setup
+next: data
 ---
 
 # Chapter 2: Where the knowledge lives

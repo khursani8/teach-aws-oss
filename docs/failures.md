@@ -1,6 +1,8 @@
 ---
 layout: default
 title: 5. Failures & the guardrail
+prev: frontier
+next: shipped
 ---
 
 # Chapter 5: The failures that matter

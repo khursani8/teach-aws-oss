@@ -1,6 +1,7 @@
 ---
 layout: default
 title: 6. What we shipped
+prev: failures
 ---
 
 # Chapter 6: The shipped recipe and its honest limits

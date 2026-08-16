@@ -1,6 +1,8 @@
 ---
 layout: default
 title: 4. The flexibility frontier
+prev: data
+next: failures
 ---
 
 # Chapter 4: Verbatim collapse and the flexibility frontier

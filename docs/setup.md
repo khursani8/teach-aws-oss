@@ -1,6 +1,7 @@
 ---
 layout: default
 title: 1. Setup & the judge
+next: sweep
 ---
 
 # Chapter 1: Task, data, and a judge that doesn't forgive

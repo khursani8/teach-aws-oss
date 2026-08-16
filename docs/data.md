@@ -1,6 +1,8 @@
 ---
 layout: default
 title: 3. Data vs hyperparams
+prev: sweep
+next: frontier
 ---
 
 # Chapter 3: It's the data (until it's the schedule)
