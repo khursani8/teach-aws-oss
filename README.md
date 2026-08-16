@@ -5,8 +5,7 @@ evaluated with a strict completely-correct LLM judge on unseen questions.
 
 **What's here:** verdicts, generations (samples), flexibility metrics, ablation
 summaries, sweep trial configs/results, grounding guardrail, Colab notebook.
-**What's NOT here:** training code and model weights (weights ship separately on
-Hugging Face; training code stays private).
+**What's NOT here:** training code and model weights (weights at [khursanirevo/teach-aws-qwen3.5-2b](https://huggingface.co/khursanirevo/teach-aws-qwen3.5-2b); training code stays private).
 
 ## Headline results (full 2,661-row unseen eval)
 
