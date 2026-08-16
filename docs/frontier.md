@@ -42,7 +42,19 @@ a strict judge, because a rephrased answer must retain *every* fact to score TRU
   free rephrase.
 - **NEFTune from epoch 2** (noise on embeddings in the second epoch only): our first wave
   ran with the noise silently inactive — caught by missing activation markers, re-run with
-  verified markers. (Results in `results/exp003/N*/` when complete.)
+  verified markers. With activation confirmed, the dose-response is a **cliff**, not a dial:
+
+  | α | acc | median sim | %verbatim |
+  |---|---|---|---|
+  | 0 (control H3) | 89.2% | 1.000 | 84% |
+  | 5 | 88.3% | 1.000 | 82% |
+  | 10 | 78.7% | 1.000 | 74% |
+  | 20 | 27.7% | 0.333 | 14% |
+
+  The mechanism works — α=20 achieves D-level flexibility from a 2-epoch base — but no dose
+  lands mid-frontier, and α=20's accuracy falls *below* the 1-epoch flexible point (27.7 vs 38.8%).
+  Embedding noise cannot buy the middle; the frontier there belongs to data/schedule choices
+  (Chapter 3-4), or to rephrasing after retrieval.
 
 ## The structural insight
 
