@@ -1,0 +1,13 @@
+{
+  "module_families": [
+    "qkv",
+    "o"
+  ],
+  "layer_start": 0.0,
+  "layer_end": 0.5,
+  "r": 16,
+  "alpha": 16,
+  "lr": 0.00022157447045005515,
+  "epochs": 1,
+  "use_synthetic": true
+}

@@ -1,0 +1,20 @@
+{
+  "module_families": [
+    "gate",
+    "up",
+    "gateup",
+    "down"
+  ],
+  "layer_start": 0.0,
+  "layer_end": 1.0,
+  "r": 16,
+  "alpha": 32,
+  "lr": 0.0004,
+  "use_synthetic": true,
+  "epochs": 2,
+  "neftune_epoch2_alpha": 5.0,
+  "seed": 3407,
+  "synth_file": "data/teach_aws_synthetic.jsonl",
+  "kmax": 3,
+  "completion_only": true
+}

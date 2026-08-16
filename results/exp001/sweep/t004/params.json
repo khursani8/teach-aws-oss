@@ -1,0 +1,17 @@
+{
+  "module_families": [
+    "qkv",
+    "o",
+    "gate",
+    "up",
+    "gateup",
+    "down"
+  ],
+  "layer_start": 0.5,
+  "layer_end": 1.0,
+  "r": 8,
+  "alpha": 8,
+  "lr": 0.00017753692862753417,
+  "epochs": 1,
+  "use_synthetic": true
+}

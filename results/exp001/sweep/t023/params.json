@@ -1,0 +1,15 @@
+{
+  "module_families": [
+    "gate",
+    "up",
+    "gateup",
+    "down"
+  ],
+  "layer_start": 0.0,
+  "layer_end": 1.0,
+  "r": 8,
+  "alpha": 16,
+  "lr": 5.2689046180232594e-05,
+  "epochs": 1,
+  "use_synthetic": true
+}

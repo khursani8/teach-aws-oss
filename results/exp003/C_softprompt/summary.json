@@ -1,0 +1,6 @@
+{
+  "strict_accuracy": 0.8192419825072886,
+  "n": 343,
+  "n_true": 281,
+  "variant": "C + softening prompt"
+}

@@ -1,0 +1,12 @@
+{
+  "module_families": [
+    "down"
+  ],
+  "layer_start": 0.25,
+  "layer_end": 0.75,
+  "r": 32,
+  "alpha": 64,
+  "lr": 0.00011098191148953881,
+  "epochs": 1,
+  "use_synthetic": true
+}
