@@ -1,0 +1,302 @@
+[
+ {
+  "idx": 3,
+  "service": "route53",
+  "verdict": "FALSE",
+  "reason": "Incorrect limit (4 or 5 IP addresses) not supported; reference states \"often used\" without such limits"
+ },
+ {
+  "idx": 14,
+  "service": "eventbridge",
+  "verdict": "FALSE",
+  "reason": "Misstates purpose; replikasi is for disaster recovery, not log isolation or compliance"
+ },
+ {
+  "idx": 18,
+  "service": "kinesis",
+  "verdict": "FALSE",
+  "reason": "Incorrect retention details, false claim about no cost for data retrieval, wrong extended retention duration, and false "
+ },
+ {
+  "idx": 24,
+  "service": "cognito",
+  "verdict": "FALSE",
+  "reason": "Misstates mechanism (Route 53 not responsible for failover, multi-region replication handles user experience)"
+ },
+ {
+  "idx": 44,
+  "service": "lambda",
+  "verdict": "FALSE",
+  "reason": "DynamoDB and Kinesis policies do not override Lambda role permissions; role controls access directly"
+ },
+ {
+  "idx": 53,
+  "service": "waf",
+  "verdict": "FALSE",
+  "reason": "misrepresents Shield Advanced not creating rules, adds \"automatik\" not in reference"
+ },
+ {
+  "idx": 62,
+  "service": "amplify",
+  "verdict": "TRUE",
+  "reason": "accurate, concise, and aligns fully with reference without additions or omissions"
+ },
+ {
+  "idx": 68,
+  "service": "secrets-manager",
+  "verdict": "FALSE",
+  "reason": "Misleading references to KMS, CloudHSM, and Secrets Manager Access Manager not in original answer"
+ },
+ {
+  "idx": 72,
+  "service": "route53",
+  "verdict": "FALSE",
+  "reason": "Candidate mentions Route 53 not charging for queries, but reference says \"Tiada caj tambahan\" (no additional charge), no"
+ },
+ {
+  "idx": 75,
+  "service": "sns",
+  "verdict": "FALSE",
+  "reason": "SNS does not have a \"setopic\" feature and SQS does not handle fanout via message distribution"
+ },
+ {
+  "idx": 91,
+  "service": "step-functions",
+  "verdict": "FALSE",
+  "reason": "Imej tidak diproses secara tidak segerak; proses di SQS, bukan langsung di Lambda"
+ },
+ {
+  "idx": 93,
+  "service": "cognito",
+  "verdict": "FALSE",
+  "reason": "Added incorrect claim about users logging in via Cognito User Pools as authentication provider without reference support"
+ },
+ {
+  "idx": 97,
+  "service": "iam",
+  "verdict": "FALSE",
+  "reason": "Candidate adds false details about source deletion and policy changes not in reference"
+ },
+ {
+  "idx": 100,
+  "service": "appsync",
+  "verdict": "FALSE",
+  "reason": "adds unnecessary GraphQL knowledge requirement, misses reference's emphasis on not needing to know GraphQL"
+ },
+ {
+  "idx": 102,
+  "service": "s3",
+  "verdict": "FALSE",
+  "reason": "Misstates performance as 10x faster and adds unsupported claims about TCO and workload suitability not in reference"
+ },
+ {
+  "idx": 106,
+  "service": "cloudwatch",
+  "verdict": "FALSE",
+  "reason": "Candidate mentions reading, querying, and writing logs, but reference specifies only logs:StartLiveTail and logs:StopLiv"
+ },
+ {
+  "idx": 136,
+  "service": "cloudfront",
+  "verdict": "FALSE",
+  "reason": "Caj untuk akses log tidak disebutkan; reference states no charge for standard logs, but candidate incorrectly claims cha"
+ },
+ {
+  "idx": 137,
+  "service": "rds",
+  "verdict": "FALSE",
+  "reason": "Incorrectly mentions MariaDB and fails to include SQL Server, PostgreSQL, Oracle specific tools; adds non-existent \"raka"
+ },
+ {
+  "idx": 139,
+  "service": "cloudwatch",
+  "verdict": "TRUE",
+  "reason": "adds unsupported details about API, WNAP, Kubelet, and MTTR not in reference"
+ },
+ {
+  "idx": 144,
+  "service": "dynamodb",
+  "verdict": "FALSE",
+  "reason": "misrepresents DynamoDB not supporting vector indexes or vector search capabilities"
+ },
+ {
+  "idx": 147,
+  "service": "kms",
+  "verdict": "FALSE",
+  "reason": "Candidate incorrectly states import capability and AWS KMS auto-rotating keys, which contradicts reference answer"
+ },
+ {
+  "idx": 160,
+  "service": "cloudfront",
+  "verdict": "FALSE",
+  "reason": "Misstates support for IPv6 in VPC origins; contradicts reference answer"
+ },
+ {
+  "idx": 166,
+  "service": "sqs",
+  "verdict": "TRUE",
+  "reason": "both correct but candidate misses billing auto-debit detail from reference"
+ },
+ {
+  "idx": 169,
+  "service": "vpc",
+  "verdict": "FALSE",
+  "reason": "VPC lalai cannot be enabled for EC2-Classic accounts; it requires a new account or one in an unvisited region with suppo"
+ },
+ {
+  "idx": 173,
+  "service": "vpc",
+  "verdict": "FALSE",
+  "reason": "Misstates method (CLI not allowed); omits key prerequisites and process"
+ },
+ {
+  "idx": 179,
+  "service": "step-functions",
+  "verdict": "FALSE",
+  "reason": "Added API and internet apps not in reference; extra details not present"
+ },
+ {
+  "idx": 182,
+  "service": "s3",
+  "verdict": "FALSE",
+  "reason": "Incorrect addition of AWS IAM CLI; not supported per reference"
+ },
+ {
+  "idx": 184,
+  "service": "eventbridge",
+  "verdict": "FALSE",
+  "reason": "Misstates EventBridge quotas; references Lambda/API Gateway not EventBridge"
+ },
+ {
+  "idx": 189,
+  "service": "ecs",
+  "verdict": "FALSE",
+  "reason": "Misrepresents AWS ECS; \"layer perisai\" not a valid concept in Amazon ECS"
+ },
+ {
+  "idx": 193,
+  "service": "eventbridge",
+  "verdict": "FALSE",
+  "reason": "Misstates effect of delete upon completion; contradicts reference answer"
+ },
+ {
+  "idx": 204,
+  "service": "redshift",
+  "verdict": "FALSE",
+  "reason": "Tokenisasi tidak disokong melalui Redshift Catalog atau AWS Glue; hanya penyamaran data dinamik disokong secara langsung"
+ },
+ {
+  "idx": 207,
+  "service": "s3",
+  "verdict": "FALSE",
+  "reason": "Added unsupported details like visual search, logs, trends, and audit not in reference"
+ },
+ {
+  "idx": 209,
+  "service": "route53",
+  "verdict": "FALSE",
+  "reason": "Misstates that DNS Failover works only via Alias records to ELB/API Gateway, ignoring health checks for external endpoin"
+ },
+ {
+  "idx": 218,
+  "service": "sns",
+  "verdict": "FALSE",
+  "reason": "misstates SQS delivers messages with certainty to multiple components simultaneously"
+ },
+ {
+  "idx": 219,
+  "service": "sns",
+  "verdict": "FALSE",
+  "reason": "Incorrect max attribute count (10 triple vs 10 attributes); missing push notification details"
+ },
+ {
+  "idx": 229,
+  "service": "glue",
+  "verdict": "FALSE",
+  "reason": "Misstates failure cause; adds unsupported facts like uptime percentages and error rates"
+ },
+ {
+  "idx": 242,
+  "service": "route53",
+  "verdict": "FALSE",
+  "reason": "Misrepresents scope; does not mention AWS Firewall Manager requirement"
+ },
+ {
+  "idx": 245,
+  "service": "step-functions",
+  "verdict": "FALSE",
+  "reason": "Step Functions do not track SQS events; SQS does not provide sender or source info; false claim of tracking SQS events"
+ },
+ {
+  "idx": 249,
+  "service": "athena",
+  "verdict": "TRUE",
+  "reason": "accurate, comprehensive, and fully aligned with reference without fabrication or omission"
+ },
+ {
+  "idx": 260,
+  "service": "rds",
+  "verdict": "FALSE",
+  "reason": "Candidate adds unsupported details like \"papan pemuka yang telah dibina\", \"one instance at a time\", and \"visualizations "
+ },
+ {
+  "idx": 261,
+  "service": "lambda",
+  "verdict": "TRUE",
+  "reason": "accurate, maintains core meaning, no fabrications or omissions"
+ },
+ {
+  "idx": 272,
+  "service": "cognito",
+  "verdict": "FALSE",
+  "reason": "Candidate adds Amazon Cognito and temporary permissions not in reference"
+ },
+ {
+  "idx": 287,
+  "service": "vpc",
+  "verdict": "FALSE",
+  "reason": "Misstates AWS Direct Connect as VPN, adds unsupported facts like creating VPC from scratch for peering"
+ },
+ {
+  "idx": 294,
+  "service": "route53",
+  "verdict": "FALSE",
+  "reason": "misrepresents VPC/AMI health checks, claims automatic failover on null metrics, and adds unsupported capabilities"
+ },
+ {
+  "idx": 295,
+  "service": "sqs",
+  "verdict": "TRUE",
+  "reason": "accurate, no fabrication, aligns with reference"
+ },
+ {
+  "idx": 296,
+  "service": "waf",
+  "verdict": "FALSE",
+  "reason": "AWS WAF does not automatically enable IPv6 support; manual configuration is required"
+ },
+ {
+  "idx": 301,
+  "service": "rds",
+  "verdict": "FALSE",
+  "reason": "Penghijrahan DB Instances dari dalam ke luar VPC tidak disokong"
+ },
+ {
+  "idx": 305,
+  "service": "route53",
+  "verdict": "FALSE",
+  "reason": "Misstates that Private DNS works without VPC; contradicts reference answer"
+ },
+ {
+  "idx": 318,
+  "service": "rds",
+  "verdict": "FALSE",
+  "reason": "Missing atomicity, replication mechanism, and rollback details; incomplete reference facts"
+ },
+ {
+  "idx": 325,
+  "service": "s3",
+  "verdict": "FALSE",
+  "reason": "incorrectly states \"Perjanjian Rakan Niaga\" instead of \"Perjanjian Rakan Perniagaan"
+ }
+]
