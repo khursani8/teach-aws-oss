@@ -5,3 +5,4 @@ merged/
 __pycache__/
 .venv*/
 .omc/
+docs/_site/

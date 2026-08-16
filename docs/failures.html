@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5. Failures & the guardrail · teach-aws experiment walkthrough</title>
+<style>
+:root{
+  --bg:#0d1117; --panel:#161b22; --panel2:#1c2330; --line:#28313f;
+  --txt:#d8dee9; --dim:#8b95a7; --acc:#6cb6ff; --good:#5ce08a; --warn:#f0c24b; --purple:#c792ea;
+  --maxw:880px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font:16px/1.75 -apple-system,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;
+  background:var(--bg); color:var(--txt);
+  background-image:radial-gradient(900px 400px at 75% -8%, #16213a40, transparent);
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px 96px}
+
+/* header */
+header.site{
+  border-bottom:1px solid var(--line);
+  background:rgba(13,17,23,.85); backdrop-filter:blur(8px);
+  position:sticky; top:0; z-index:10;
+}
+header.site .wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;flex-wrap:wrap;gap:8px}
+.brand{display:flex;align-items:baseline;gap:10px;text-decoration:none}
+.brand b{color:var(--txt);font-size:15px;letter-spacing:.2px}
+.brand span{color:var(--dim);font-size:12.5px}
+nav.chapters{display:flex;gap:2px;flex-wrap:wrap}
+nav.chapters a{
+  color:var(--dim);text-decoration:none;font-size:13px;padding:6px 11px;border-radius:8px;
+}
+nav.chapters a:hover{color:var(--txt);background:var(--panel2)}
+nav.chapters a.on{color:var(--acc);background:#6cb6ff18}
+
+/* typography */
+h1{font-size:31px;line-height:1.25;margin:56px 0 8px;font-weight:700;letter-spacing:-.3px}
+h2{font-size:21px;margin:44px 0 12px;color:var(--txt);font-weight:650}
+h3{font-size:16.5px;margin:28px 0 8px;color:var(--acc);font-weight:600}
+p{margin:14px 0}
+a{color:var(--acc);text-decoration:none}
+a:hover{text-decoration:underline}
+.subtitle{color:var(--dim);font-size:15px;margin-bottom:8px}
+
+/* tables */
+table{border-collapse:collapse;width:100%;margin:20px 0;font-size:14.5px;display:block;overflow-x:auto}
+th{color:var(--dim);font-size:11.5px;text-transform:uppercase;letter-spacing:.8px;text-align:left;font-weight:600}
+th,td{padding:9px 14px;border-bottom:1px solid var(--line)}
+tbody tr:hover td{background:#ffffff06}
+td strong{color:var(--good)}
+
+/* code + quotes */
+code{font:13px/1.5 'SFMono-Regular',Consolas,'Liberation Mono',monospace;background:#1f2937;color:#a5d6ff;padding:2px 6px;border-radius:5px}
+pre{background:#0a0e14;border:1px solid var(--line);border-radius:10px;padding:18px;overflow-x:auto;margin:18px 0}
+pre code{background:none;padding:0;color:#c9d6e5}
+blockquote{
+  border-left:3px solid var(--acc);background:var(--panel);border-radius:0 10px 10px 0;
+  padding:14px 20px;margin:18px 0;color:var(--txt)
+}
+blockquote p{margin:6px 0}
+
+/* lists */
+ul,ol{padding-left:26px;margin:14px 0}
+li{margin:6px 0}
+hr{border:none;border-top:1px solid var(--line);margin:40px 0}
+
+/* chapter footer nav */
+.chapter-nav{display:flex;justify-content:space-between;gap:12px;margin-top:64px;
+  border-top:1px solid var(--line);padding-top:20px}
+.chapter-nav a{color:var(--dim);font-size:13.5px}
+.chapter-nav a:hover{color:var(--acc)}
+
+/* misc */
+.badge{display:inline-block;font-size:11px;padding:2px 9px;border-radius:12px;background:#123b22;color:var(--good);vertical-align:2px}
+@media(max-width:640px){h1{font-size:25px} table{font-size:13px}}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <b>teach-aws</b><span>experiment walkthrough</span>
+    </a>
+    <nav class="chapters">
+      <a href="{setup.html}" >1 Setup</a>
+      <a href="{sweep.html}" >2 Sweep</a>
+      <a href="{data.html}" >3 Data</a>
+      <a href="{frontier.html}" >4 Frontier</a>
+      <a href="{failures.html}" class="on">5 Failures</a>
+      <a href="{shipped.html}" >6 Shipped</a>
+      <a href="{gallery.html}" >Examples</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+<h1>Chapter 5: The failures that matter</h1>
+<h2>Quantifying the risk on the shipped model (H3, 89.2%)</h2>
+<ul>
+<li>37/343 answers judged FALSE (10.8%)</li>
+<li>76% of those failures are fluent, confident-length text; users cannot self-detect them</li>
+<li>Concentrated in thin-coverage services: vpc 40% FALSE, amplify/appsync 30%</li>
+</ul>
+<h2>The canonical failure: invented features</h2>
+<blockquote>
+<p><strong>Q:</strong> Bolehkah saya menyimpan data saya apabila stack dipadamkan?</p>
+<p><strong>Model:</strong> "Ya, anda boleh menggunakan ciri <strong>Memory and Cache Behavior</strong> dalam AWS
+CloudFormation untuk mengekalkan data semasa stack dipadamkan…"</p>
+<p><strong>Reference:</strong> CloudFormation deletion policies (snapshots for EBS volumes / RDS instances).</p>
+</blockquote>
+<p>"Memory and Cache Behavior" does not exist. This is wrong-cluster recall wearing the
+reference register: the model found <em>a</em> feature-shaped answer, not <em>this question's</em>
+answer. The verbatim polish makes it <em>more</em> convincing, not less.</p>
+<h2>The grounding guardrail</h2>
+<p>Inference-only, no retraining: extract named entities from the candidate, compare against
+the reference (in production: your retrieved ground-truth passage), flag novel ones.</p>
+<pre><code class="language-python">novel = entities(answer) - entities(reference)
+if novel:  # mention of something the source never said
+    warn_or_fallback()
+</code></pre>
+<p>Benchmark on H3's eval (n=343):</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Catches wrong answers</td>
+<td><strong>22/37 (59%)</strong></td>
+</tr>
+<tr>
+<td>False-flags correct answers</td>
+<td>1/306 (0.3%)</td>
+</tr>
+</tbody>
+</table>
+<p>The guardrail turns confident-wrong into honest-unsure, which is what
+prevents user complaints. The remaining 41% of failures (wrong numbers, omissions,
+same-entity different-claims) need retrieval-side coverage, not generation-side patching:
+the vpc/amplify/appsync FALSE-rates track training coverage directly.</p>
+<h2>Is the judge itself reliable?</h2>
+<p>Every number on this site comes from a 4B judge. We re-judged H3's
+identical generations with a 30B-A3B judge: <strong>89.2% vs 91.3%, 97.4% agreement</strong>
+(9/343 verdicts flipped, net +2.1pp, within the subset noise floor). The strict-judge
+foundation holds; the small judge is not the source of our results. (<code>results/exp003/H3/judge_ab.json</code>)</p>
+<h2>What we did about the data side</h2>
+<p>Error analysis at every stage (bucketed FALSE reasons → truncation fix → register fix →
+service coverage) is in <code>results/*/false_reasons.json</code>; the pattern that survived to the
+end is knowledge gaps, not style. The fix is more/better data on the weak services, which
+is exactly what the training pipeline is for.</p>
+<p><em>Artifacts: <code>results/exp003/guardrail/</code>, <code>results/exp003/H3/</code></em></p>
+<div class="chapter-nav">
+  <a href="frontier.html">← previous</a>
+  <a href="shipped.html">next →</a>
+</div>
+</main>
+</body>
+</html>

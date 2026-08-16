@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The experiment · teach-aws experiment walkthrough</title>
+<style>
+:root{
+  --bg:#0d1117; --panel:#161b22; --panel2:#1c2330; --line:#28313f;
+  --txt:#d8dee9; --dim:#8b95a7; --acc:#6cb6ff; --good:#5ce08a; --warn:#f0c24b; --purple:#c792ea;
+  --maxw:880px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font:16px/1.75 -apple-system,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;
+  background:var(--bg); color:var(--txt);
+  background-image:radial-gradient(900px 400px at 75% -8%, #16213a40, transparent);
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px 96px}
+
+/* header */
+header.site{
+  border-bottom:1px solid var(--line);
+  background:rgba(13,17,23,.85); backdrop-filter:blur(8px);
+  position:sticky; top:0; z-index:10;
+}
+header.site .wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;flex-wrap:wrap;gap:8px}
+.brand{display:flex;align-items:baseline;gap:10px;text-decoration:none}
+.brand b{color:var(--txt);font-size:15px;letter-spacing:.2px}
+.brand span{color:var(--dim);font-size:12.5px}
+nav.chapters{display:flex;gap:2px;flex-wrap:wrap}
+nav.chapters a{
+  color:var(--dim);text-decoration:none;font-size:13px;padding:6px 11px;border-radius:8px;
+}
+nav.chapters a:hover{color:var(--txt);background:var(--panel2)}
+nav.chapters a.on{color:var(--acc);background:#6cb6ff18}
+
+/* typography */
+h1{font-size:31px;line-height:1.25;margin:56px 0 8px;font-weight:700;letter-spacing:-.3px}
+h2{font-size:21px;margin:44px 0 12px;color:var(--txt);font-weight:650}
+h3{font-size:16.5px;margin:28px 0 8px;color:var(--acc);font-weight:600}
+p{margin:14px 0}
+a{color:var(--acc);text-decoration:none}
+a:hover{text-decoration:underline}
+.subtitle{color:var(--dim);font-size:15px;margin-bottom:8px}
+
+/* tables */
+table{border-collapse:collapse;width:100%;margin:20px 0;font-size:14.5px;display:block;overflow-x:auto}
+th{color:var(--dim);font-size:11.5px;text-transform:uppercase;letter-spacing:.8px;text-align:left;font-weight:600}
+th,td{padding:9px 14px;border-bottom:1px solid var(--line)}
+tbody tr:hover td{background:#ffffff06}
+td strong{color:var(--good)}
+
+/* code + quotes */
+code{font:13px/1.5 'SFMono-Regular',Consolas,'Liberation Mono',monospace;background:#1f2937;color:#a5d6ff;padding:2px 6px;border-radius:5px}
+pre{background:#0a0e14;border:1px solid var(--line);border-radius:10px;padding:18px;overflow-x:auto;margin:18px 0}
+pre code{background:none;padding:0;color:#c9d6e5}
+blockquote{
+  border-left:3px solid var(--acc);background:var(--panel);border-radius:0 10px 10px 0;
+  padding:14px 20px;margin:18px 0;color:var(--txt)
+}
+blockquote p{margin:6px 0}
+
+/* lists */
+ul,ol{padding-left:26px;margin:14px 0}
+li{margin:6px 0}
+hr{border:none;border-top:1px solid var(--line);margin:40px 0}
+
+/* chapter footer nav */
+.chapter-nav{display:flex;justify-content:space-between;gap:12px;margin-top:64px;
+  border-top:1px solid var(--line);padding-top:20px}
+.chapter-nav a{color:var(--dim);font-size:13.5px}
+.chapter-nav a:hover{color:var(--acc)}
+
+/* misc */
+.badge{display:inline-block;font-size:11px;padding:2px 9px;border-radius:12px;background:#123b22;color:var(--good);vertical-align:2px}
+@media(max-width:640px){h1{font-size:25px} table{font-size:13px}}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <b>teach-aws</b><span>experiment walkthrough</span>
+    </a>
+    <nav class="chapters">
+      <a href="{setup.html}" >1 Setup</a>
+      <a href="{sweep.html}" >2 Sweep</a>
+      <a href="{data.html}" >3 Data</a>
+      <a href="{frontier.html}" >4 Frontier</a>
+      <a href="{failures.html}" >5 Failures</a>
+      <a href="{shipped.html}" >6 Shipped</a>
+      <a href="{gallery.html}" >Examples</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+<h1>Teaching a 2B model to answer AWS questions in Malay</h1>
+<p><strong>TL;DR:</strong> We finetuned Qwen3.5-2B with unsloth LoRA on 18k paraphrase-linked Malay AWS QA pairs,
+evaluated with a strict completely-correct LLM judge on 2,661 unseen questions, and took it from
+<strong>4.1% → 87.3%</strong>, while mapping exactly where flexibility dies, where accuracy comes from,
+and which failures remain dangerous.</p>
+<table>
+<thead>
+<tr>
+<th>Chapter</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="setup.html">1. Setup &amp; the judge</a></td>
+<td>task, data, strict TRUE/FALSE evaluation</td>
+</tr>
+<tr>
+<td><a href="sweep.html">2. The sweep</a></td>
+<td>where the knowledge lives (modules, layers, rank, LR)</td>
+</tr>
+<tr>
+<td><a href="data.html">3. Data vs hyperparams</a></td>
+<td>paraphrase diversity, epochs, completion-only</td>
+</tr>
+<tr>
+<td><a href="frontier.html">4. The flexibility frontier</a></td>
+<td>verbatim collapse, balancing acts, NEFTune</td>
+</tr>
+<tr>
+<td><a href="failures.html">5. Failures &amp; the guardrail</a></td>
+<td>hallucination quantified, grounding check</td>
+</tr>
+<tr>
+<td><a href="shipped.html">6. What we shipped</a></td>
+<td>final recipe, notebook, honest limits</td>
+</tr>
+<tr>
+<td><a href="gallery.html">Model responses by service</a></td>
+<td>same question, four models, real generations</td>
+</tr>
+</tbody>
+</table>
+<h2>Headline numbers</h2>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Strict acc (full unseen set)</th>
+<th>Median similarity to reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base Qwen3.5-2B</td>
+<td>4.1%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>D: 1 epoch, completion-only, +synthetic K5</td>
+<td>35.7%</td>
+<td>0.29 (rephrases)</td>
+</tr>
+<tr>
+<td>C: 2 epochs, full-sequence loss</td>
+<td>86.8%</td>
+<td>1.00 (verbatim)</td>
+</tr>
+<tr>
+<td><strong>H3: 2 epochs, completion-only</strong></td>
+<td><strong>87.3%</strong></td>
+<td>1.00 (verbatim)</td>
+</tr>
+</tbody>
+</table>
+<p>Every number on this site comes from artifacts in this repository
+(<code>results/</code>), generated by the experiments logged in order below.</p>
+<div class="chapter-nav">
+  <span></span>
+  <span></span>
+</div>
+</main>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6. What we shipped · teach-aws experiment walkthrough</title>
+<style>
+:root{
+  --bg:#0d1117; --panel:#161b22; --panel2:#1c2330; --line:#28313f;
+  --txt:#d8dee9; --dim:#8b95a7; --acc:#6cb6ff; --good:#5ce08a; --warn:#f0c24b; --purple:#c792ea;
+  --maxw:880px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font:16px/1.75 -apple-system,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;
+  background:var(--bg); color:var(--txt);
+  background-image:radial-gradient(900px 400px at 75% -8%, #16213a40, transparent);
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px 96px}
+
+/* header */
+header.site{
+  border-bottom:1px solid var(--line);
+  background:rgba(13,17,23,.85); backdrop-filter:blur(8px);
+  position:sticky; top:0; z-index:10;
+}
+header.site .wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;flex-wrap:wrap;gap:8px}
+.brand{display:flex;align-items:baseline;gap:10px;text-decoration:none}
+.brand b{color:var(--txt);font-size:15px;letter-spacing:.2px}
+.brand span{color:var(--dim);font-size:12.5px}
+nav.chapters{display:flex;gap:2px;flex-wrap:wrap}
+nav.chapters a{
+  color:var(--dim);text-decoration:none;font-size:13px;padding:6px 11px;border-radius:8px;
+}
+nav.chapters a:hover{color:var(--txt);background:var(--panel2)}
+nav.chapters a.on{color:var(--acc);background:#6cb6ff18}
+
+/* typography */
+h1{font-size:31px;line-height:1.25;margin:56px 0 8px;font-weight:700;letter-spacing:-.3px}
+h2{font-size:21px;margin:44px 0 12px;color:var(--txt);font-weight:650}
+h3{font-size:16.5px;margin:28px 0 8px;color:var(--acc);font-weight:600}
+p{margin:14px 0}
+a{color:var(--acc);text-decoration:none}
+a:hover{text-decoration:underline}
+.subtitle{color:var(--dim);font-size:15px;margin-bottom:8px}
+
+/* tables */
+table{border-collapse:collapse;width:100%;margin:20px 0;font-size:14.5px;display:block;overflow-x:auto}
+th{color:var(--dim);font-size:11.5px;text-transform:uppercase;letter-spacing:.8px;text-align:left;font-weight:600}
+th,td{padding:9px 14px;border-bottom:1px solid var(--line)}
+tbody tr:hover td{background:#ffffff06}
+td strong{color:var(--good)}
+
+/* code + quotes */
+code{font:13px/1.5 'SFMono-Regular',Consolas,'Liberation Mono',monospace;background:#1f2937;color:#a5d6ff;padding:2px 6px;border-radius:5px}
+pre{background:#0a0e14;border:1px solid var(--line);border-radius:10px;padding:18px;overflow-x:auto;margin:18px 0}
+pre code{background:none;padding:0;color:#c9d6e5}
+blockquote{
+  border-left:3px solid var(--acc);background:var(--panel);border-radius:0 10px 10px 0;
+  padding:14px 20px;margin:18px 0;color:var(--txt)
+}
+blockquote p{margin:6px 0}
+
+/* lists */
+ul,ol{padding-left:26px;margin:14px 0}
+li{margin:6px 0}
+hr{border:none;border-top:1px solid var(--line);margin:40px 0}
+
+/* chapter footer nav */
+.chapter-nav{display:flex;justify-content:space-between;gap:12px;margin-top:64px;
+  border-top:1px solid var(--line);padding-top:20px}
+.chapter-nav a{color:var(--dim);font-size:13.5px}
+.chapter-nav a:hover{color:var(--acc)}
+
+/* misc */
+.badge{display:inline-block;font-size:11px;padding:2px 9px;border-radius:12px;background:#123b22;color:var(--good);vertical-align:2px}
+@media(max-width:640px){h1{font-size:25px} table{font-size:13px}}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <b>teach-aws</b><span>experiment walkthrough</span>
+    </a>
+    <nav class="chapters">
+      <a href="{setup.html}" >1 Setup</a>
+      <a href="{sweep.html}" >2 Sweep</a>
+      <a href="{data.html}" >3 Data</a>
+      <a href="{frontier.html}" >4 Frontier</a>
+      <a href="{failures.html}" >5 Failures</a>
+      <a href="{shipped.html}" class="on">6 Shipped</a>
+      <a href="{gallery.html}" >Examples</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+<h1>Chapter 6: The shipped recipe and its honest limits</h1>
+<h2>Final model</h2>
+<p><strong>H3:</strong> 87.3% strict accuracy on the full 2,661-question unseen eval (base: 4.1%).</p>
+<table>
+<thead>
+<tr>
+<th>Ingredient</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base</td>
+<td>unsloth/Qwen3.5-2B (text-only)</td>
+</tr>
+<tr>
+<td>LoRA</td>
+<td>full MLP (gate/up/gate_up/down), ALL layers, r=16, α=2r=32, dropout 0</td>
+</tr>
+<tr>
+<td>LR</td>
+<td>4e-4 linear, 5 warmup steps, batch 2×4, adamw_8bit</td>
+</tr>
+<tr>
+<td>Schedule</td>
+<td><strong>2 epochs</strong>, <strong>completion-only loss</strong></td>
+</tr>
+<tr>
+<td>Data</td>
+<td>teach_aws + K3 synthetic answer paraphrases (26,888 rows)</td>
+</tr>
+</tbody>
+</table>
+<p>Weights: Hugging Face (see notebook for the repo id). Training code: private.</p>
+<h2>How it compares (same strict judge, same unseen eval)</h2>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Strict acc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>teach-aws Qwen3.5-2B (ours)</strong></td>
+<td><strong>87.3%</strong> (n=2,661)</td>
+</tr>
+<tr>
+<td>PixelSpaceAI Malaysian-Qwen2.5-7B-AWS-Malay-LoRA</td>
+<td>15.0% (n=60)</td>
+</tr>
+<tr>
+<td>mesolitica Malaysian-Qwen2.5-7B-Instruct (their base)</td>
+<td>8.3% (n=60)</td>
+</tr>
+<tr>
+<td>base Qwen3.5-2B (our base)</td>
+<td>4.1% (n=2,661)</td>
+</tr>
+</tbody>
+</table>
+<p>The 7B community adapter nearly doubles its base on facts and reads beautifully in Malay,
+but it's a register/style LoRA (~2.5k pairs, card recommends RAG for factual accuracy), so a
+fact-complete judge keeps only 15%. Style and facts are different axes; the notebook lets you
+run all three yourself.</p>
+<h2>See it answer</h2>
+<p><a href="gallery.html">Model responses by service</a>: one real question per service, answered by all four models side by side.</p>
+<h2>Use it</h2>
+<p>The <a href="../notebook/teach_aws_inference.ipynb">Colab notebook</a> shows loading with vLLM,
+asking questions, the real failure example, and the guardrail in action.</p>
+<h2>What it can do</h2>
+<ul>
+<li>Answer paraphrased AWS questions it has never seen, at doc-quality register, 87% strict-correct</li>
+<li>Short questions get short answers; long ones get complete reference-grade paragraphs</li>
+<li>Malay AWS terminology consistent with the reference corpus</li>
+</ul>
+<h2>What it cannot do (and what we do about it)</h2>
+<table>
+<thead>
+<tr>
+<th>Limitation</th>
+<th>Evidence</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Invented features on thin-coverage topics</td>
+<td>"Memory and Cache Behavior" example</td>
+<td>grounding guardrail (59% catch, 0.3% overblock)</td>
+</tr>
+<tr>
+<td>~13% overall failure rate</td>
+<td>2,324/2,661 TRUE</td>
+<td>surface confidence UX; verify-on-flag</td>
+</tr>
+<tr>
+<td>Rigid phrasing (83% verbatim)</td>
+<td>median sim 1.000</td>
+<td>accepted by design; rephrase post-retrieval if needed</td>
+</tr>
+<tr>
+<td>No knowledge outside the corpus</td>
+<td>canary tests</td>
+<td>retrieval-augmented deployment</td>
+</tr>
+</tbody>
+</table>
+<h2>What we'd try next</h2>
+<ol>
+<li>Judge redesign: fact-coverage rubric (element extraction + per-fact check). It makes
+   flexible answers scorable, unlocking the training-side diversity work</li>
+<li>Hard-service synthetic mining (vpc/amplify/appsync FALSE-rates → targeted data)</li>
+<li>Teacher-rewrite chain: tiny accurate retriever + 35B rewriter, if flexible phrasing
+   becomes a requirement</li>
+</ol>
+<h2>Learning resources</h2>
+<p>If LoRA finetuning is new to you, this video covers the method this project uses:
+<a href="https://www.youtube.com/watch?v=zQi0kqQNDrU">How to finetune LLMs with LoRA</a>.</p>
+<h2>Reproduction &amp; record</h2>
+<p>Everything on this site is backed by artifacts in <code>results/</code>: every sweep trial's config
+and verdict, the 24-layer ablation map, the K-grid, the flexibility frontier runs, the
+guardrail benchmark, and the full-set finals. The experiment log (in experiment order,
+including the invalidated results and why) is the source of this walkthrough.</p>
+<div class="chapter-nav">
+  <a href="failures.html">← previous</a>
+  <span></span>
+</div>
+</main>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1. Setup & the judge · teach-aws experiment walkthrough</title>
+<style>
+:root{
+  --bg:#0d1117; --panel:#161b22; --panel2:#1c2330; --line:#28313f;
+  --txt:#d8dee9; --dim:#8b95a7; --acc:#6cb6ff; --good:#5ce08a; --warn:#f0c24b; --purple:#c792ea;
+  --maxw:880px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font:16px/1.75 -apple-system,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;
+  background:var(--bg); color:var(--txt);
+  background-image:radial-gradient(900px 400px at 75% -8%, #16213a40, transparent);
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px 96px}
+
+/* header */
+header.site{
+  border-bottom:1px solid var(--line);
+  background:rgba(13,17,23,.85); backdrop-filter:blur(8px);
+  position:sticky; top:0; z-index:10;
+}
+header.site .wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;flex-wrap:wrap;gap:8px}
+.brand{display:flex;align-items:baseline;gap:10px;text-decoration:none}
+.brand b{color:var(--txt);font-size:15px;letter-spacing:.2px}
+.brand span{color:var(--dim);font-size:12.5px}
+nav.chapters{display:flex;gap:2px;flex-wrap:wrap}
+nav.chapters a{
+  color:var(--dim);text-decoration:none;font-size:13px;padding:6px 11px;border-radius:8px;
+}
+nav.chapters a:hover{color:var(--txt);background:var(--panel2)}
+nav.chapters a.on{color:var(--acc);background:#6cb6ff18}
+
+/* typography */
+h1{font-size:31px;line-height:1.25;margin:56px 0 8px;font-weight:700;letter-spacing:-.3px}
+h2{font-size:21px;margin:44px 0 12px;color:var(--txt);font-weight:650}
+h3{font-size:16.5px;margin:28px 0 8px;color:var(--acc);font-weight:600}
+p{margin:14px 0}
+a{color:var(--acc);text-decoration:none}
+a:hover{text-decoration:underline}
+.subtitle{color:var(--dim);font-size:15px;margin-bottom:8px}
+
+/* tables */
+table{border-collapse:collapse;width:100%;margin:20px 0;font-size:14.5px;display:block;overflow-x:auto}
+th{color:var(--dim);font-size:11.5px;text-transform:uppercase;letter-spacing:.8px;text-align:left;font-weight:600}
+th,td{padding:9px 14px;border-bottom:1px solid var(--line)}
+tbody tr:hover td{background:#ffffff06}
+td strong{color:var(--good)}
+
+/* code + quotes */
+code{font:13px/1.5 'SFMono-Regular',Consolas,'Liberation Mono',monospace;background:#1f2937;color:#a5d6ff;padding:2px 6px;border-radius:5px}
+pre{background:#0a0e14;border:1px solid var(--line);border-radius:10px;padding:18px;overflow-x:auto;margin:18px 0}
+pre code{background:none;padding:0;color:#c9d6e5}
+blockquote{
+  border-left:3px solid var(--acc);background:var(--panel);border-radius:0 10px 10px 0;
+  padding:14px 20px;margin:18px 0;color:var(--txt)
+}
+blockquote p{margin:6px 0}
+
+/* lists */
+ul,ol{padding-left:26px;margin:14px 0}
+li{margin:6px 0}
+hr{border:none;border-top:1px solid var(--line);margin:40px 0}
+
+/* chapter footer nav */
+.chapter-nav{display:flex;justify-content:space-between;gap:12px;margin-top:64px;
+  border-top:1px solid var(--line);padding-top:20px}
+.chapter-nav a{color:var(--dim);font-size:13.5px}
+.chapter-nav a:hover{color:var(--acc)}
+
+/* misc */
+.badge{display:inline-block;font-size:11px;padding:2px 9px;border-radius:12px;background:#123b22;color:var(--good);vertical-align:2px}
+@media(max-width:640px){h1{font-size:25px} table{font-size:13px}}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <b>teach-aws</b><span>experiment walkthrough</span>
+    </a>
+    <nav class="chapters">
+      <a href="{setup.html}" class="on">1 Setup</a>
+      <a href="{sweep.html}" >2 Sweep</a>
+      <a href="{data.html}" >3 Data</a>
+      <a href="{frontier.html}" >4 Frontier</a>
+      <a href="{failures.html}" >5 Failures</a>
+      <a href="{shipped.html}" >6 Shipped</a>
+      <a href="{gallery.html}" >Examples</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+<h1>Chapter 1: Task, data, and a judge that doesn't forgive</h1>
+<h2>The task</h2>
+<p>Teach <code>Qwen/Qwen3.5-2B</code> to answer AWS questions in Bahasa Malaysia, in the register of the
+aws-malay-qa reference answers: tight factual paragraphs, no markdown walls.</p>
+<h2>The data</h2>
+<p><strong>Train:</strong> <code>khursanirevo/teach_aws</code>, 18,455 rows.
+The structure matters more than the count: <strong>2,811 unique answers</strong> (clusters), each with
+~6.6 <em>question paraphrases</em> (same intent, different phrasing) and one canonical answer.
+This is a paraphrase-retrieval task wearing a QA costume.</p>
+<p><strong>Eval:</strong> <code>PixelSpaceAI/aws-malay-qa</code>, both splits = 2,661 questions. Never trained on.
+Zero eval questions appear verbatim in training, so any accuracy must survive paraphrase.</p>
+<h2>The judge (the most important design decision)</h2>
+<p>A small instruct model (Qwen3-4B) reads the question, the REFERENCE answer, and the
+CANDIDATE, and outputs exactly one word, <code>TRUE</code> or <code>FALSE</code>, under these rules:</p>
+<ul>
+<li>TRUE only if the candidate is <strong>completely correct</strong>: every factual element of the
+  reference present, nothing wrong, nothing hallucinated</li>
+<li>Partially correct = FALSE. No half credit.</li>
+<li>Style, wording, formatting ignored; facts only.</li>
+</ul>
+<p>Output is structurally forced (guided decoding over <code>{TRUE, FALSE}</code>), temperature 0.</p>
+<p><strong>Why strict-binary?</strong> It matches the product requirement (an answer that's missing a
+caveat about, say, MFA Delete is a wrong answer), and it makes progress measurable:
+there's no partial credit to game. The cost appears in Chapter 4: this judge
+structurally punishes rephrasing. We kept it anyway and characterized the frontier
+rather than loosening the metric.</p>
+<h2>How not to fool yourself (a lesson we paid for)</h2>
+<p>Our first eval pipeline had a silent bug: the LoRA merge loaded adapters onto a mismatched
+model class, matched <strong>0 of 48 modules</strong>, and quietly saved the base weights. Every early
+"finetuned" score was the base model in disguise. The 4.5% vs 4.1% "improvement" was judge
+noise on identical outputs. It was caught by md5: three different configs produced
+byte-identical merged weights.</p>
+<p>After that, every merge writes a provenance record and hard-fails unless the merged
+weights differ from base on a layer the adapter trained. Trust nothing you
+didn't verify at the tensor level.</p>
+<div class="chapter-nav">
+  <span></span>
+  <a href="sweep.html">next →</a>
+</div>
+</main>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Model responses by service · teach-aws experiment walkthrough</title>
+<style>
+:root{
+  --bg:#0d1117; --panel:#161b22; --panel2:#1c2330; --line:#28313f;
+  --txt:#d8dee9; --dim:#8b95a7; --acc:#6cb6ff; --good:#5ce08a; --warn:#f0c24b; --purple:#c792ea;
+  --maxw:880px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font:16px/1.75 -apple-system,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;
+  background:var(--bg); color:var(--txt);
+  background-image:radial-gradient(900px 400px at 75% -8%, #16213a40, transparent);
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px 96px}
+
+/* header */
+header.site{
+  border-bottom:1px solid var(--line);
+  background:rgba(13,17,23,.85); backdrop-filter:blur(8px);
+  position:sticky; top:0; z-index:10;
+}
+header.site .wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;flex-wrap:wrap;gap:8px}
+.brand{display:flex;align-items:baseline;gap:10px;text-decoration:none}
+.brand b{color:var(--txt);font-size:15px;letter-spacing:.2px}
+.brand span{color:var(--dim);font-size:12.5px}
+nav.chapters{display:flex;gap:2px;flex-wrap:wrap}
+nav.chapters a{
+  color:var(--dim);text-decoration:none;font-size:13px;padding:6px 11px;border-radius:8px;
+}
+nav.chapters a:hover{color:var(--txt);background:var(--panel2)}
+nav.chapters a.on{color:var(--acc);background:#6cb6ff18}
+
+/* typography */
+h1{font-size:31px;line-height:1.25;margin:56px 0 8px;font-weight:700;letter-spacing:-.3px}
+h2{font-size:21px;margin:44px 0 12px;color:var(--txt);font-weight:650}
+h3{font-size:16.5px;margin:28px 0 8px;color:var(--acc);font-weight:600}
+p{margin:14px 0}
+a{color:var(--acc);text-decoration:none}
+a:hover{text-decoration:underline}
+.subtitle{color:var(--dim);font-size:15px;margin-bottom:8px}
+
+/* tables */
+table{border-collapse:collapse;width:100%;margin:20px 0;font-size:14.5px;display:block;overflow-x:auto}
+th{color:var(--dim);font-size:11.5px;text-transform:uppercase;letter-spacing:.8px;text-align:left;font-weight:600}
+th,td{padding:9px 14px;border-bottom:1px solid var(--line)}
+tbody tr:hover td{background:#ffffff06}
+td strong{color:var(--good)}
+
+/* code + quotes */
+code{font:13px/1.5 'SFMono-Regular',Consolas,'Liberation Mono',monospace;background:#1f2937;color:#a5d6ff;padding:2px 6px;border-radius:5px}
+pre{background:#0a0e14;border:1px solid var(--line);border-radius:10px;padding:18px;overflow-x:auto;margin:18px 0}
+pre code{background:none;padding:0;color:#c9d6e5}
+blockquote{
+  border-left:3px solid var(--acc);background:var(--panel);border-radius:0 10px 10px 0;
+  padding:14px 20px;margin:18px 0;color:var(--txt)
+}
+blockquote p{margin:6px 0}
+
+/* lists */
+ul,ol{padding-left:26px;margin:14px 0}
+li{margin:6px 0}
+hr{border:none;border-top:1px solid var(--line);margin:40px 0}
+
+/* chapter footer nav */
+.chapter-nav{display:flex;justify-content:space-between;gap:12px;margin-top:64px;
+  border-top:1px solid var(--line);padding-top:20px}
+.chapter-nav a{color:var(--dim);font-size:13.5px}
+.chapter-nav a:hover{color:var(--acc)}
+
+/* misc */
+.badge{display:inline-block;font-size:11px;padding:2px 9px;border-radius:12px;background:#123b22;color:var(--good);vertical-align:2px}
+@media(max-width:640px){h1{font-size:25px} table{font-size:13px}}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <b>teach-aws</b><span>experiment walkthrough</span>
+    </a>
+    <nav class="chapters">
+      <a href="{setup.html}" >1 Setup</a>
+      <a href="{sweep.html}" >2 Sweep</a>
+      <a href="{data.html}" >3 Data</a>
+      <a href="{frontier.html}" >4 Frontier</a>
+      <a href="{failures.html}" >5 Failures</a>
+      <a href="{shipped.html}" >6 Shipped</a>
+      <a href="{gallery.html}" class="on">Examples</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+<h1>Same question, four models, six services</h1>
+<p>Every example below is a real generation (greedy decoding) on an unseen eval question,
+one per service. Judge verdicts from the full eval, not these single samples.</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>What to look for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>teach-aws (H3)</td>
+<td>reference-register, fact-complete</td>
+</tr>
+<tr>
+<td>teach-aws D</td>
+<td>same facts, rephrased</td>
+</tr>
+<tr>
+<td>PixelSpaceAI 7B LoRA</td>
+<td>fluent Malay, register-first</td>
+</tr>
+<tr>
+<td>mesolitica 7B base</td>
+<td>the starting point</td>
+</tr>
+</tbody>
+</table>
+<h2>s3</h2>
+<p><strong>Q:</strong> Bagaimana saya boleh memastikan perlindungan maksimum untuk versi yang dipelihara?</p>
+<details><summary>reference</summary>
+
+Keupayaan MFA Delete (Multi-Factor Authentication) Versioning boleh digunakan untuk menyediakan lapisan keselamatan tambahan. Secara lalai, semua permintaan ke bucket Amazon S3 anda memerlukan kelayakan akaun AWS anda. Jika anda mendayakan Versioning dengan MFA Delete pada bucket Amazon S3 anda, dua bentuk pengesahan diperlukan untuk memadamkan versi objek secara kekal: kelayakan akaun AWS anda dan kod enam digit yang sah serta nombor siri daripada peranti pengesahan yang berada dalam milikan fi
+
+</details>
+
+<p><strong>teach-aws (H3):</strong> Keupayaan MFA Delete (Multi-Factor Authentication) Versioning boleh digunakan untuk menyediakan lapisan keselamatan tambahan. Secara lalai, semua permintaan ke bucket Amazon S3 anda memerlukan kelayakan akaun AWS anda. Jika anda mendayakan Versioning dengan MFA Delete pada bucket Amazon S3 anda, dua bentuk pengesahan diperlukan untuk memadamkan versi objek secara kekal: kelayakan akaun AWS anda dan kod enam digit yang sah serta nombor siri daripada peranti pengesahan yang berada dalam milikan fizikal anda. Untuk mengetahui lebih lanjut tentang mendayakan Versioning dengan MFA Delete, termasuk </p>
+<p><strong>teach-aws (D, flexible):</strong> Apabila anda memulakan versi baharu, anda boleh menetapkan sama ada versi utama atau minor sebagai versi yang akan dipelihara. Amazon API Gateway menyediakan versi baharu secara automatik untuk semua REST API anda apabila versi baharu didayakan. Amazon API Gateway kemudian menyediakan pengemaskinian untuk setiap sumber dalam REST API anda berdasarkan corak penggunaan. Sebagai contoh, jika anda mempunyai API carian dan pencarian yang menggunakan dua sumber, satu untuk setiap sumber, dan anda mendayakan versi baharu untuk carian, Amazon API Gateway akan menyediakan versi baharu untuk carian apab</p>
+<p><strong>PixelSpaceAI 7B LoRA:</strong> Untuk memastikan perlindungan maksimum, anda boleh menggunakan dasar bucket untuk menyekat akses kepada semua versi objek, termasuk yang dipelihara, dan menyediakan kebenaran yang lebih terperinci untuk akses kepada versi semasa sahaja. Anda juga boleh menggunakan dasar bucket untuk menetapkan dasar pengekalan yang memastikan semua versi objek dipelihara selama-lamanya.</p>
+<details><summary>mesolitica 7B base</summary>
+
+Untuk memastikan perlindungan maksimum untuk versi yang disimpan, anda boleh mengikuti langkah-langkah berikut:
+
+1. Gunakan sistem penyimpanan yang selamat dan boleh dipercayai, seperti penyimpanan awan atau perkhidmatan penyimpanan yang disediakan oleh pihak ketiga yang dipercayai.
+
+2. Pastikan versi yang disimpan disimpan dalam format yang selamat dan tidak boleh diubah, seperti format fail yang tidak boleh diubah atau format fail yang disulitkan.
+
+3. Lakukan pemeriksaan keselamatan berkala untuk memastikan versi yang disimpan tidak terdedah kepada ancaman keselamatan seperti serangan siber 
+
+</details>
+
+<h2>lambda</h2>
+<p><strong>Q:</strong> Apakah CloudWatch Live Tail dan bagaimana ia berfungsi dengan Lambda?</p>
+<details><summary>reference</summary>
+
+CloudWatch Logs Live Tail ialah keupayaan penstriman log dan analitik interaktif yang menyediakan keterlihatan masa nyata ke dalam log, memudahkan pembangunan dan penyelesaian masalah fungsi Lambda. Ini membolehkan pembangun menguji dan mengesahkan perubahan kod atau konfigurasi dengan cepat dalam masa nyata, mempercepatkan kitaran tulis-uji-sebar (juga dikenali sebagai "gelung pembangunan dalaman") semasa membina aplikasi dengan Lambda. Pengalaman Live Tail juga membolehkan pengendali dan pasuk
+
+</details>
+
+<p><strong>teach-aws (H3):</strong> CloudWatch Logs Live Tail ialah keupayaan penstriman log dan analitik interaktif yang menyediakan keterlihatan masa nyata ke dalam log, memudahkan pembangunan dan penyelesaian masalah fungsi Lambda. Ini membolehkan pembangun menguji dan mengesahkan perubahan kod atau konfigurasi dengan cepat dalam masa nyata, mempercepatkan kitaran tulis-uji-sebar (juga dikenali sebagai "gelung pembangunan dalaman") semasa membina aplikasi dengan Lambda. Pengalaman Live Tail juga membolehkan pengendali dan pasukan DevOps mengesan dan menyahpepijat kegagalan dan ralat kritikal dalam kod fungsi Lambda dengan leb</p>
+<p><strong>teach-aws (D, flexible):</strong> CloudWatch Live Tail ialah keupayaan analitik interaktif baharu yang memberikan anda paparan masa nyata bagi metrik dan peristiwa yang penting untuk aplikasi anda. Live Tail untuk AWS Lambda memberikan anda paparan masa nyata tentang prestasi, kesihatan, dan penggunaan (termasuk panggilan yang disekat) untuk fungsi Lambda anda. Live Tail membolehkan pembangun dan pengendali dengan cepat mengesan isu kritikal dengan segera dan menyelesaikan masalah dengan lebih cepat, mengurangkan Mean Time to Recovery (MTTR) semasa memberi tumpuan kepada pemulihan aplikasi.</p>
+<p><strong>PixelSpaceAI 7B LoRA:</strong> CloudWatch Live Tail ialah ciri yang membolehkan anda melihat output sebenar daripada fungsi Lambda atau proses tanpa pelayan tanpa perlu menunggu log disimpan. Ia memaparkan output log dalam masa nyata dalam konsol CloudWatch. Anda boleh melihat output sebenar fungsi Lambda, termasuk ralat dan mesej stdout/stderr, dalam konsol CloudWatch tanpa perlu menunggu log disimpan. Ini berguna untuk debug dan memahami apa yang berlaku semasa pelaksanaan.</p>
+<details><summary>mesolitica 7B base</summary>
+
+CloudWatch Live Tail adalah ciri yang membolehkan anda melihat log dalam masa nyata dari pelbagai sumber, termasuk AWS Lambda. Ia membolehkan anda memantau dan memeriksa log dengan mudah tanpa perlu menunggu log dikumpulkan dan disimpan dalam CloudWatch Logs.
+
+Dalam konteks AWS Lambda, CloudWatch Live Tail boleh digunakan untuk memantau log yang dihasilkan oleh fungsi Lambda anda. Ini membolehkan anda memeriksa log dengan cepat dan tepat untuk menyelesaikan masalah atau memantau prestasi fungsi Lambda anda.
+
+Untuk menggunakan CloudWatch Live Tail dengan Lambda, anda perlu mengaktifkan ciri ini
+
+</details>
+
+<h2>cloudfront</h2>
+<p><strong>Q:</strong> Bagaimanakah saya boleh melindungi aplikasi web saya yang dihantar melalui CloudFront daripada serangan DDoS?</p>
+<details><summary>reference</summary>
+
+Sebagai pelanggan AWS, anda mendapat AWS Shield Standard tanpa kos tambahan. AWS Shield ialah perkhidmatan terurus yang menyediakan perlindungan terhadap serangan DDoS untuk aplikasi web yang berjalan di AWS. AWS Shield Standard menyediakan perlindungan untuk semua pelanggan AWS terhadap serangan Infrastruktur (lapisan 3 dan 4) yang biasa dan paling kerap berlaku seperti SYN/UDP Floods, Reflection attacks, dan lain-lain untuk menyokong ketersediaan tinggi aplikasi anda di AWS. Lampirkan AWS WAF 
+
+</details>
+
+<p><strong>teach-aws (H3):</strong> Sebagai pelanggan AWS, anda mendapat AWS Shield Standard tanpa kos tambahan. AWS Shield ialah perkhidmatan terurus yang menyediakan perlindungan terhadap serangan DDoS untuk aplikasi web yang berjalan di AWS. AWS Shield Standard menyediakan perlindungan untuk semua pelanggan AWS terhadap serangan Infrastruktur (lapisan 3 dan 4) yang biasa dan paling kerap berlaku seperti SYN/UDP Floods, Reflection attacks, dan lain-lain untuk menyokong ketersediaan tinggi aplikasi anda di AWS. Lampirkan AWS WAF pada pengedaran CloudFront anda dan dayakan AntiDDoS AMR, ciri yang disasarkan khusus untuk mitigasi</p>
+<p><strong>teach-aws (D, flexible):</strong> Untuk melindungi daripada serangan DDoS, anda boleh menggunakan kombinasi AWS Shield (piawai disertakan percuma, Advanced untuk perlindungan lanjutan) dan AWS WAF untuk menyekat trafik berbahaya. Anda juga boleh menggunakan Amazon CloudFront yang disepadukan dengan AWS Shield untuk memastikan sumber anda di hadapan tidak terjejas. Untuk DDoS yang canggih, anda boleh menggunakan gabungan CloudFront, WAF, dan Shield untuk membentuk pertahanan berlapis.</p>
+<p><strong>PixelSpaceAI 7B LoRA:</strong> CloudFront menyediakan perlindungan terbina dalam terhadap serangan DDoS. CloudFront menggunakan pengesahan berasaskan IP dan algoritma penapisan berat untuk mengurangkan trafik yang berpotensi berbahaya. CloudFront juga menyediakan perlindungan DDoS lanjutan yang boleh anda gunakan untuk melindungi aplikasi web anda dengan lebih lanjut. Perlindungan DDoS lanjutan CloudFront boleh anda gunakan untuk melindungi aplikasi web anda dengan lebih lanjut. Perlindungan DDoS lanjutan CloudFront boleh anda gunakan untuk melindungi aplikasi web anda dengan lebih lanjut.</p>
+<details><summary>mesolitica 7B base</summary>
+
+Untuk melindungi aplikasi web anda yang dihantar melalui CloudFront daripada serangan DDoS, anda boleh mengambil beberapa langkah berikut:
+
+1. **Gunakan CloudFront Web Application Firewall (WAF)**: CloudFront menyediakan WAF yang boleh mengesan dan menghalang serangan DDoS. anda boleh mengaktifkan WAF untuk menguruskan serangan yang mencurigakan.
+
+2. **Gunakan CloudFront Distribution**: Pastikan anda menggunakan CloudFront Distribution yang mempunyai ciri-ciri keselamatan yang diperlukan seperti pengesahan pengguna, pengesahan kandungan, dan pengesahan sumber.
+
+3. **Gunakan AWS Shield**: AWS S
+
+</details>
+
+<h2>vpc</h2>
+<p><strong>Q:</strong> Bagaimanakah saya menetapkan alamat IP peribadi kepada instans Amazon EC2 dalam VPC?</p>
+<details><summary>reference</summary>
+
+Apabila anda melancarkan instans Amazon EC2 dalam subnet yang bukan IPv6-only, anda boleh secara pilihan menentukan alamat IPv4 peribadi utama untuk instans tersebut. Jika anda tidak menentukan alamat IPv4 peribadi utama, AWS secara automatik menetapkannya daripada julat alamat IPv4 yang anda tetapkan kepada subnet tersebut. Anda boleh menetapkan alamat IPv4 peribadi sekunder semasa melancarkan instans, semasa mencipta Elastic Network Interface, atau pada bila-bila masa selepas instans dilancark
+
+</details>
+
+<p><strong>teach-aws (H3):</strong> Apabila anda melancarkan instans Amazon EC2 dalam subnet yang bukan IPv6-only, anda boleh secara pilihan menentukan alamat IPv4 peribadi utama untuk instans tersebut. Jika anda tidak menentukan alamat IPv4 peribadi utama, AWS secara automatik menetapkannya daripada julat alamat IPv4 yang anda tetapkan kepada subnet tersebut. Anda boleh menetapkan alamat IPv4 peribadi sekunder semasa melancarkan instans, semasa mencipta Elastic Network Interface, atau pada bila-bila masa selepas instans dilancarkan atau antara muka dicipta. Sekiranya anda melancarkan instans Amazon EC2 dalam subnet IPv6-only, A</p>
+<p><strong>teach-aws (D, flexible):</strong> Apabila anda melancarkan instans Amazon EC2 dalam subnet yang bukan IPv6-only, anda boleh secara pilihan menentukan alamat IPv4 peribadi utama untuk instans tersebut. Jika anda tidak menentukan alamat IPv4 peribadi utama, AWS secara automatik menetapkannya daripada julat alamat IPv4 yang anda tetapkan kepada subnet tersebut. Anda boleh menetapkan alamat IPv4 peribadi sekunder semasa melancarkan instans, semasa mencipta Elastic Network Interface, atau pada bila-bila masa selepas instans dilancarkan atau antara muka dicipta. Sekiranya anda melancarkan instans Amazon EC2 dalam subnet IPv6-only, A</p>
+<p><strong>PixelSpaceAI 7B LoRA:</strong> Anda boleh menetapkan alamat IP peribadi kepada instans Amazon EC2 dalam VPC dengan memilih alamat IP semasa memulakan instans tersebut. Anda juga boleh menetapkan alamat IP peribadi kepada instans sedia ada dalam VPC dengan memanggil API ModifyInstanceAttribute atau menggunakan AWS Management Console.</p>
+<details><summary>mesolitica 7B base</summary>
+
+Untuk menetapkan alamat IP peribadi kepada instans Amazon EC2 dalam VPC, anda perlu mengikuti langkah-langkah berikut:
+
+1. **Cipta VPC dan Subnet**: Pertama, anda perlu mencipta VPC dan subnet yang sesuai untuk instans EC2 anda. Pastikan subnet tersebut mempunyai alamat IP yang anda inginkan.
+
+2. **Cipta Instans EC2**: Selepas itu, cipta instans EC2 anda dalam VPC yang telah dicipta. Pilih jenis instans yang sesuai dan pilih konfigurasi yang membolehkan anda menetapkan alamat IP peribadi.
+
+3. **Konfigurasi Alamat IP Peribadi**: Pada langkah ini, anda perlu menetapkan alamat IP peribadi untuk i
+
+</details>
+
+<h2>rds</h2>
+<p><strong>Q:</strong> Bagaimanakah saya mengintegrasikan Enhanced Monitoring dengan alat yang saya gunakan pada masa ini?</p>
+<details><summary>reference</summary>
+
+Amazon RDS Enhanced Monitoring menyediakan satu set metrik yang dibentuk sebagai muatan JSON yang dihantar ke akaun CloudWatch Logs anda. Muatan JSON dihantar pada granulariti yang terakhir dikonfigurasikan untuk instance Amazon RDS. Terdapat dua cara anda boleh menggunakan metrik melalui papan pemuka atau aplikasi pihak ketiga. Alat pemantauan boleh menggunakan Langganan CloudWatch Logs untuk menyediakan suapan hampir masa nyata untuk metrik. Sebagai alternatif, anda boleh menggunakan penapis d
+
+</details>
+
+<p><strong>teach-aws (H3):</strong> Enhanced Monitoring menyediakan satu set metrik yang dibentuk sebagai muatan JSON yang dihantar ke akaun CloudWatch Logs anda. Muatan JSON dihantar pada granulariti yang terakhir dikonfigurasikan untuk instance Amazon RDS. Terdapat dua cara anda boleh menggunakan metrik melalui papan pemuka atau aplikasi pihak ketiga. Alat pemantauan boleh menggunakan Langganan CloudWatch Logs untuk menyediakan suapan hampir masa nyata untuk metrik. Sebagai alternatif, anda boleh menggunakan penapis dalam CloudWatch Logs untuk memindahkan metrik ke CloudWatch dan mengintegrasikan aplikasi anda dengan CloudWatc</p>
+<p><strong>teach-aws (D, flexible):</strong> Amazon RDS Enhanced Monitoring menyediakan satu set metrik yang dipisahkan secara logik merangkumi: CPU, memori, sistem fail, dan I/O cakera; rangkaian; dan metrik berkaitan dengan instance Amazon RDS. Setiap metrik mempunyai granulariti yang berbeza – granulariti 1 saat secara lalai, atau pilihan untuk menggunakan granulariti tinggi sehingga 10 saat. Metrik ini dihantar ke Amazon CloudWatch, yang membolehkan anda menggunakan alat CloudWatch dengan mudah untuk memahami kesihatan instance Amazon RDS anda. Alat pemantauan boleh memanfaatkan CloudWatch Metrics untuk mencipta papan pemuka, pengger</p>
+<p><strong>PixelSpaceAI 7B LoRA:</strong> Anda boleh mengintegrasikan Enhanced Monitoring dengan alat yang anda gunakan pada masa ini dengan memasukkan metrik yang dijana oleh Enhanced Monitoring ke dalam alat tersebut. Metrik yang dijana oleh Enhanced Monitoring tersedia dalam format OpenMetrics dan boleh diimport ke dalam mana-mana alat yang menyokong OpenMetrics.</p>
+<details><summary>mesolitica 7B base</summary>
+
+Untuk mengintegrasikan Enhanced Monitoring dengan alat yang anda gunakan pada masa ini, anda perlu mengikuti langkah-langkah berikut:
+
+1. **Pilih Alat Sumber**: Pastikan alat yang anda gunakan pada masa ini mempunyai sokongan untuk integrasi dengan Enhanced Monitoring. Ini biasanya dilakukan melalui API atau SDK yang disediakan oleh Enhanced Monitoring.
+
+2. **Baca Dokumentasi**: Baca dokumentasi yang disediakan oleh Enhanced Monitoring untuk memahami bagaimana integrasi dengan alat anda boleh dilakukan. Dokumentasi ini biasanya akan memberikan panduan langkah demi langkah tentang bagaimana unt
+
+</details>
+
+<h2>dynamodb</h2>
+<p><strong>Q:</strong> Adakah point-in-time recovery tersedia pada global tables DynamoDB?</p>
+<details><summary>reference</summary>
+
+Ya, anda boleh mendayakan point-in-time recovery pada setiap replika global table DynamoDB.
+
+</details>
+
+<p><strong>teach-aws (H3):</strong> Ya, anda boleh mendayakan point-in-time recovery pada setiap replika global table DynamoDB.</p>
+<p><strong>teach-aws (D, flexible):</strong> Ya, anda boleh mendayakan point-in-time recovery pada setiap replika global table DynamoDB.</p>
+<p><strong>PixelSpaceAI 7B LoRA:</strong> Ya. Global tables DynamoDB menyokong point-in-time recovery pada semua replika global. Point-in-time recovery tersedia pada replika global yang dicipta selepas 31 Januari 2023.</p>
+<details><summary>mesolitica 7B base</summary>
+
+Ya, point-in-time recovery (PITR) tersedia untuk global tables DynamoDB. Dengan menggunakan PITR, anda boleh memulihkan data dari sebarang titik masa dalam masa 31 hari terakhir. Ini membolehkan anda memulihkan data ke keadaan sebelum perubahan atau kegagalan yang tidak diingini.
+
+</details>
+<div class="chapter-nav">
+  <a href="shipped.html">← previous</a>
+  <span></span>
+</div>
+</main>
+</body>
+</html>
