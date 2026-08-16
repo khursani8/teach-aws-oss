@@ -27,7 +27,7 @@ and which failures remain dangerous.
 | Base Qwen3.5-2B | 4.1% | — |
 | D: 1 epoch, completion-only, +synthetic K5 | 35.7% | 0.29 (rephrases) |
 | C: 2 epochs, full-sequence loss | 86.8% | 1.00 (verbatim) |
-| **H4: H3 + hard-service data** | **91.2%** | 1.00 (verbatim) |
+| **H4: H3 + hard-service data** | **91.2 / 91.0** (two seeds) | 1.00 (verbatim) |
 | H3: 2 epochs, completion-only | 87.3% | 1.00 (verbatim) |
 
 Every number on this site comes from artifacts in this repository

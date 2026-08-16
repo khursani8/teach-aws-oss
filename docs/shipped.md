@@ -8,7 +8,7 @@ prev: failures
 
 ## Final model
 
-**H4** (H3 recipe + 1,260 hard-service synthetic variants): **91.2%** strict accuracy on the full 2,661-question unseen eval (base: 4.1%). The augmentation targeted the hallucination services directly: vpc FALSE 16%→9%, amplify 11%→0%, appsync 19%→10% on the full set, with zero services worsening by 10pp or more.
+**H4** (H3 recipe + 1,260 hard-service synthetic variants): **91.2% / 91.0%** strict accuracy on the full 2,661-question unseen eval across two seeds (base: 4.1%). The augmentation targeted the hallucination services directly: vpc FALSE 16%→9%, amplify 11%→0%, appsync 19%→10% on the full set, with zero services worsening by 10pp or more.
 
 | Ingredient | Value |
 |---|---|
