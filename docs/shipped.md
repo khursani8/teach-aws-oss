@@ -19,6 +19,20 @@ title: 6. What we shipped
 
 Weights: Hugging Face (see notebook for the repo id). Training code: private.
 
+## How it compares (same strict judge, same unseen eval)
+
+| Model | Strict acc |
+|---|---|
+| **teach-aws Qwen3.5-2B (ours)** | **87.3%** (n=2,661) |
+| PixelSpaceAI Malaysian-Qwen2.5-7B-AWS-Malay-LoRA | 15.0% (n=60) |
+| mesolitica Malaysian-Qwen2.5-7B-Instruct (their base) | 8.3% (n=60) |
+| base Qwen3.5-2B (our base) | 4.1% (n=2,661) |
+
+The 7B community adapter nearly doubles its base on facts and reads beautifully in Malay —
+but it's a register/style LoRA (~2.5k pairs, card recommends RAG for factual accuracy), so a
+fact-complete judge keeps only 15%. Style and facts are different axes; the notebook lets you
+run all three yourself.
+
 ## Use it
 
 The [Colab notebook](../notebook/teach_aws_inference.ipynb) shows loading with vLLM,
