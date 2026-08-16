@@ -12,7 +12,7 @@ and which failures remain dangerous.
 
 | Chapter | |
 |---|---|
-| [1. Setup & the judge](setup.html) | task, data, strict TRUE/FALSE evaluation |
+| [1. Setup & the judge](setup.html) | task, data, strict TRUE/FALSE evaluation, why trust the numbers |
 | [2. The sweep](sweep.html) | where the knowledge lives (modules, layers, rank, LR) |
 | [3. Data vs hyperparams](data.html) | paraphrase diversity, epochs, completion-only |
 | [4. The flexibility frontier](frontier.html) | verbatim collapse, balancing acts, NEFTune |

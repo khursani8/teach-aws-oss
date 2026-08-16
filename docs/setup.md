@@ -39,6 +39,37 @@ there's no partial credit to game. The cost appears in Chapter 4: this judge
 structurally punishes rephrasing. We kept it anyway and characterized the frontier
 rather than loosening the metric.
 
+
+## Why trust these numbers
+
+Every headline on this site rests on four checks. Each failed at least once during the
+project, which is how we know they bite.
+
+**The eval is genuinely unseen.** Zero of the 2,661 eval questions appear verbatim in
+training. The train set paraphrases the same facts, but no eval question does, so every
+score reflects paraphrase generalization, not memorized prompts.
+
+**The scores replicate.** Identical configs trained on different seeds land close
+together: the 91% recipe scored 91.2% and 91.0%; the earlier 33% recipe scored
+32.9/32.7/33.8 across three seeds. We also measured the noise floor directly by running
+one config twice (4.7% vs 6.4% on the 343-question subset, so ±1.7pp). Deltas smaller
+than that are treated as ties, which is why some near-identical sweep results were
+never declared winners.
+
+**The measurement instrument was cross-examined.** All verdicts come from a 4B judge,
+so we re-judged a full generation set with a 30B judge: 97.4% agreement, net +2.1pp.
+A judge 7x larger moves the headline less than the noise floor.
+
+**Merges are tensor-verified.** The scariest bug of this project was a silent no-op
+merge (adapters matched 0 modules, base weights shipped labeled as finetuned). Since
+then every merge writes a provenance record and hard-fails unless the merged weights
+differ from base on a layer the adapter actually trained. The shipped model's hub file
+is md5-matched to the local merge.
+
+Where the numbers are soft, the text says so: the gallery samples are n=1 per service
+and labeled as such, and the 12% of strict-FALSE verdicts that a second judge
+overturned are documented in Chapter 5 rather than rounded away.
+
 ## How not to fool yourself (a lesson we paid for)
 
 Our first eval pipeline had a silent bug: the LoRA merge loaded adapters onto a mismatched
